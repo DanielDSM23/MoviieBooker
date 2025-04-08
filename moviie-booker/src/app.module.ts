@@ -11,6 +11,7 @@ import entities from "./typeorm";
 import {HttpService} from "@nestjs/axios";
 import {MovieModule} from "./movie/movie.module";
 
+//https://www.youtube.com/watch?v=qvhqUMRuquw
 @Module({
   imports: [ TypeOrmModule.forRoot({
     type:'mysql',

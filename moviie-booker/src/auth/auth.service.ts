@@ -5,7 +5,7 @@ import {User as UserEntity} from "../typeorm/User";
 import {Repository} from "typeorm";
 import * as bcrypt from 'bcryptjs';
 import {JwtService} from "@nestjs/jwt";
-
+// https://www.youtube.com/watch?v=s_HHyAWMeok
 @Injectable()
 export class AuthService {
     constructor(
@@ -34,7 +34,7 @@ export class AuthService {
             throw new UnauthorizedException('Incorrect password');
         }
         const {password, ...userWithoutPassword} = user;
-        const payload = { sub: user.id, username: user.username };
+        const payload = { sub: user.id, username: user.username, email: user.email };
         return {
             message : "successfully connected",
             token : await this.jwtService.signAsync(payload),

@@ -1,6 +1,6 @@
 import {IsEmail, IsNotEmpty, MinLength} from 'class-validator';
 import {ApiProperty} from "@nestjs/swagger";
-
+//https://medium.com/@yelinliu/dto-explained-in-nestjs-3a296498d77b
 export class RegisterDto {
     @ApiProperty({ example: 'test', description: 'Identifiant unique de l\'utilisateur' })
     @IsNotEmpty()

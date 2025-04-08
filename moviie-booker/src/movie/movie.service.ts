@@ -12,16 +12,13 @@ export class MovieService {
         private readonly httpService: HttpService
     ) {}
 
-    findMovies(page: number, search: string, sort: string) {
+    findMovies(params :{ page: number, search: string, include_adult: string, primary_release_year: string, year: string }) {
         const token = process.env.TMDB_SECRET;
-        let url = `https://api.themoviedb.org/3/movie/now_playing?language=fr-FR&page=${page}`;
-        if (search) {
-            url = `https://api.themoviedb.org/3/search/movie?query=${search}&page=${page}&language=en-US`;
-        }
-        if (sort) {
-            url += `&sort_by=${sort}`;
-        }
-
+        let url = `https://api.themoviedb.org/3/movie/now_playing?language=fr-FR&page=${+params.page}`;
+        if (params.search) url = `https://api.themoviedb.org/3/search/movie?query=${params.search}&page=${+params.page}&language=fr-FR`;
+        if (params.include_adult == "true") url+= `&include_adult=true`
+        if (params.primary_release_year) url+= `&primary_release_year=${params.primary_release_year}`
+        if (params.year) url+= `&year=${params.primary_release_year}`
         return this.httpService
             .get(url, {
                 headers: {
@@ -31,48 +28,9 @@ export class MovieService {
             .pipe(map(response => response.data));
     }
 
-    searchMovies(params: {
-        query: string;
-        page?: number;
-        include_adult?: boolean;
-        language?: string;
-        primary_release_year?: string;
-        region?: string;
-        year?: string;
-    }) {
+    getGenres() {
         const token = process.env.TMDB_SECRET;
-
-        const queryParams = new URLSearchParams({
-            query: params.query,
-            page: String(params.page ?? 1),
-            include_adult: String(params.include_adult ?? false),
-            language: params.language ?? 'en-US',
-        });
-
-        if (params.primary_release_year) {
-            queryParams.append('primary_release_year', params.primary_release_year);
-        }
-
-        if (params.region) {
-            queryParams.append('region', params.region);
-        }
-
-        if (params.year) {
-            queryParams.append('year', params.year);
-        }
-
-        const url = `https://api.themoviedb.org/3/search/movie?${queryParams.toString()}`;
-
-        return this.httpService.get(url, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }).pipe(map(response => response.data));
-    }
-
-    getGenres(language = 'en-US') {
-        const token = process.env.TMDB_SECRET;
-        const url = `https://api.themoviedb.org/3/genre/movie/list?language=${language}`;
+        const url = `https://api.themoviedb.org/3/genre/movie/list?language=fr-FR`;
 
         return this.httpService.get(url, {
             headers: {

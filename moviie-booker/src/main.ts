@@ -9,12 +9,22 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
       .setTitle('API NestJS')
-      .setDescription('Documentation Swagger de l\'API')
+      .setDescription('Documentation de l\'API MoovieBooker')
       .setVersion('1.0')
+      .addBearerAuth(
+          {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+            name: 'Authorization',
+            in: 'header',
+          },
+          'access-token',
+      )
       .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory);
+  SwaggerModule.setup('docs', app, documentFactory);
 
   await app.listen(process.env.PORT ?? 3000);
 }
