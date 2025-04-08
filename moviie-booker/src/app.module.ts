@@ -5,7 +5,11 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import { AuthModule } from './auth/auth.module';
+import { MovieController } from './movie/movie.controller';
+import { MovieService } from './movie/movie.service';
 import entities from "./typeorm";
+import {HttpService} from "@nestjs/axios";
+import {MovieModule} from "./movie/movie.module";
 
 @Module({
   imports: [ TypeOrmModule.forRoot({
@@ -17,8 +21,8 @@ import entities from "./typeorm";
     synchronize: true,
     username : '260656',
     password: '2vZvJ3PL@rduWme'
-  }), AuthModule],
-  controllers: [AppController, AuthController],
-  providers: [AppService, AuthService],
+  }), AuthModule, MovieModule],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

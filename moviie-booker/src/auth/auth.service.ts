@@ -30,7 +30,6 @@ export class AuthService {
             throw new BadRequestException(`User with email '${loginDto.username}' not found`);
         }
         let isPasswordCorrect = await bcrypt.compare(loginDto.password, user.password);
-        console.log(isPasswordCorrect);
         if(!isPasswordCorrect){
             throw new UnauthorizedException('Incorrect password');
         }
@@ -40,5 +39,18 @@ export class AuthService {
             message : "successfully connected",
             token : await this.jwtService.signAsync(payload),
         }
+    }
+
+    async validateUser(username: string, pass: string): Promise<any> {
+        const user = await this.userRepository.findOneBy({username});
+        if(!user){
+            return null;
+        }
+        const isPasswordCorrect = await bcrypt.compare(pass, user.password)
+        if (user && isPasswordCorrect) {
+            const { password, ...result } = user;
+            return result;
+        }
+        return null;
     }
 }
