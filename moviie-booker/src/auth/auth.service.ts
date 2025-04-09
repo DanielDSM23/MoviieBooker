@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, UnauthorizedException} from '@nestjs/common';
+import {BadRequestException, ConflictException, Injectable, UnauthorizedException} from '@nestjs/common';
 import {LoginDto, RegisterDto} from './dto/auth.dto';
 import {InjectRepository} from "@nestjs/typeorm";
 import {User as UserEntity} from "../typeorm/User";
@@ -16,6 +16,10 @@ export class AuthService {
 
 
     async register(registerDto : RegisterDto){
+        let isUserAvailable = await this.userRepository.findOneBy({username : registerDto.username})
+        if(isUserAvailable){
+           throw new ConflictException(`Username '${registerDto.username}' already taken`)
+        }
         let newUser = this.userRepository.create(registerDto);
         let saltedPassword  = await bcrypt.hash(newUser.password, 10)
         newUser = { ...newUser, password: saltedPassword  };
@@ -34,7 +38,7 @@ export class AuthService {
             throw new UnauthorizedException('Incorrect password');
         }
         const {password, ...userWithoutPassword} = user;
-        const payload = { sub: user.id, username: user.username, email: user.email };
+        const payload = { id: user.id, username: user.username, email: user.email };
         return {
             message : "successfully connected",
             token : await this.jwtService.signAsync(payload),

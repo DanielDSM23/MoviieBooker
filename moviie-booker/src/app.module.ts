@@ -10,6 +10,7 @@ import { MovieService } from './movie/movie.service';
 import entities from "./typeorm";
 import {HttpService} from "@nestjs/axios";
 import {MovieModule} from "./movie/movie.module";
+import { ReservationModule } from './reservation/reservation.module';
 
 //https://www.youtube.com/watch?v=qvhqUMRuquw
 @Module({
@@ -22,7 +23,7 @@ import {MovieModule} from "./movie/movie.module";
     synchronize: true,
     username : '260656',
     password: '2vZvJ3PL@rduWme'
-  }), AuthModule, MovieModule],
+  }), AuthModule, MovieModule, ReservationModule],
   controllers: [],
   providers: [],
 })
