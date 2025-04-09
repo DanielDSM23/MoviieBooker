@@ -20,7 +20,20 @@ export class ReservationService {
     }
 
 
-    getAllUserReservation(req){
-        return this.reservationRepository.findOneBy({user: req.user.id});
+    async getAllUserReservation(req) {
+        const reservations = await this.reservationRepository.findBy({
+            user: { id: req.user.id }
+        });
+
+        const cleanedReservations =
+            reservations.map(
+                ({ user, ...rest }) => rest);
+
+        return cleanedReservations;
     }
+
+    deleteUserReservation(id: string){
+
+    }
+
 }
