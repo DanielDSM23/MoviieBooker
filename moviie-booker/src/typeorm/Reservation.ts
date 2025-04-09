@@ -11,6 +11,6 @@ export class Reservation {
 
     movie: string;
 
-    @Column({ type: 'timestamp' })
+    @Column()
     reservationDate: Date;
 }

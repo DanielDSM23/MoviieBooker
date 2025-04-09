@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Reservation as ReservationEntity} from "../typeorm/Reservation";
 import {Repository} from "typeorm";
@@ -25,15 +25,22 @@ export class ReservationService {
             user: { id: req.user.id }
         });
 
-        const cleanedReservations =
-            reservations.map(
-                ({ user, ...rest }) => rest);
-
-        return cleanedReservations;
+        return reservations.map(
+            ({user, ...rest}) => rest);
     }
 
-    deleteUserReservation(id: string){
+    async deleteReservation(req, id: number){
+        const reservation = await this.reservationRepository.findOneBy({id});
+        if(reservation?.user.id != req.user.id) { throw new UnauthorizedException(); }
+        const result = await this.reservationRepository.delete(id)
+        if (result.affected === 0) {
+            throw new NotFoundException(`Reservation with ID ${id} not found`);
+        }
 
+        return {
+            message: `Reservation with ID ${id} has been deleted`,
+        };
     }
+
 
 }

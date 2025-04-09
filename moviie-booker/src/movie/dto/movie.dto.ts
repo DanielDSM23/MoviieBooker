@@ -1,12 +1,10 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import {IsOptional, IsString, IsInt, Min, Max} from 'class-validator';
+import {IsOptional, IsString, IsInt, Min, Max, IsNumberString} from 'class-validator';
 
 export class MovieQueryDto {
     @ApiPropertyOptional({ example: 1, description: 'Page' })
     @IsOptional()
-    @IsInt()
-    @Min(1)
-    @Max(500)
+    @IsNumberString()
     page?: number;
 
     @ApiPropertyOptional({ example: 'batman', description: 'Recherche' })

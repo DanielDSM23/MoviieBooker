@@ -1,13 +1,21 @@
 import {ApiProperty} from "@nestjs/swagger";
-import {IsDateString, IsEmail, IsInt, IsNotEmpty, MinLength} from "class-validator";
+import {IsDateString, IsInt, IsString} from "class-validator";
 
 export class CreateReservationDto{
     @ApiProperty({ example: '1451013', description: 'id du film' })
-    @IsEmail()
-    @MinLength(10)
+    @IsString()
     film_id: string;
     @ApiProperty({ description: 'Date et heure du film' })
-    @IsDateString()
-    reservationDate: string;
+    @IsDateString({}, {
+        message: 'La date doit être une date ISO valide (ex: 2025-04-10T15:00:00Z).'
+    })
+    reservationDate: Date;
 
+}
+
+
+export class DeleteReservationDto{
+    @ApiProperty({ description: 'Id de reservation' })
+    @IsInt()
+    reservationDate: number;
 }
