@@ -9,10 +9,9 @@ import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 @Controller('movie')
 export class MovieController {
     constructor(private readonly movieService: MovieService) {}
-    @UseGuards(JwtAuthGuard)
+
     @Get("movies")
     @ApiOperation({ summary: 'Chercher ou filtrer un film' })
-    @ApiBearerAuth('access-token')
     movies(@Query() query: MovieQueryDto) {
         return this.movieService.findMovies({
             page: query.page ?? 1,
@@ -23,10 +22,9 @@ export class MovieController {
         });
     }
 
-    @UseGuards(JwtAuthGuard)
+
     @Get("genres")
     @ApiOperation({ summary: 'Liste les genres' })
-    @ApiBearerAuth('access-token')
     searchMovie(){
         return this.movieService.getGenres();
     }
