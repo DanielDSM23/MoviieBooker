@@ -1,7 +1,7 @@
-import {Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
+import {ConflictException, Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Reservation as ReservationEntity} from "../typeorm/Reservation";
-import {Repository} from "typeorm";
+import {Between, Repository} from "typeorm";
 import {JwtService} from "@nestjs/jwt";
 import {CreateReservationDto} from "./dto/reservation.dto";
 
@@ -13,11 +13,24 @@ export class ReservationService {
         private jwtService: JwtService
     ) {}
 
-    createReservation(createReservationDto : CreateReservationDto, req){
+    //https://typeorm.io/find-options#advanced-options
+    async createReservation(createReservationDto : CreateReservationDto, req){
+        const reservationDate = new Date(createReservationDto.reservationDate);
+        const twoHoursAfterReservationDate = new Date(reservationDate.getTime() + 2 * 60 * 60 * 1000);
+        const reservations = await this.reservationRepository.findBy({
+            user: { id: req.user.id },
+            reservationDate: Between(reservationDate, twoHoursAfterReservationDate),
+        });
+        console.log(reservations);
+        if(reservations.length != 0) {
+            throw new ConflictException("Vous ne pouvez pas reserver sur cette plage");
+        }
+
         let newReservation = this.reservationRepository.create(createReservationDto);
         newReservation = {...newReservation, user:req.user.id}
         return this.reservationRepository.save(newReservation);
     }
+
 
 
     async getAllUserReservation(req) {
