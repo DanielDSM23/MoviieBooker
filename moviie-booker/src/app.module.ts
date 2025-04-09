@@ -22,7 +22,8 @@ import { ReservationModule } from './reservation/reservation.module';
     entities,
     synchronize: true,
     username : '260656',
-    password: '2vZvJ3PL@rduWme'
+    password: '2vZvJ3PL@rduWme',
+    logging: true,
   }), AuthModule, MovieModule, ReservationModule],
   controllers: [],
   providers: [],
