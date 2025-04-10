@@ -38,7 +38,7 @@ Tous les points de terminaison sont documentés dans le répertoire /docs du ser
 - **Corps de la Requête** :
   ```json
   {
-    "username": "string",
+    "email": "string",
     "password": "string"
   }
 - **Réponse** :
@@ -50,7 +50,7 @@ Tous les points de terminaison sont documentés dans le répertoire /docs du ser
 - **Corps de la Requête** :
   ```json
   {
-    "username": "string",
+    "email": "string",
     "password": "string"
   }
 - **Réponse** :
