@@ -16,9 +16,9 @@ export class AuthService {
 
 
     async register(registerDto : RegisterDto){
-        let isUserAvailable = await this.userRepository.findOneBy({username : registerDto.username})
+        let isUserAvailable = await this.userRepository.findOneBy({email : registerDto.email})
         if(isUserAvailable){
-           throw new ConflictException(`Username '${registerDto.username}' already taken`)
+           throw new ConflictException(`Username '${registerDto.email}' already taken`)
         }
         let newUser = this.userRepository.create(registerDto);
         let saltedPassword  = await bcrypt.hash(newUser.password, 10)
@@ -29,24 +29,24 @@ export class AuthService {
     }
 
     async login(loginDto : LoginDto){
-        const user = await this.userRepository.findOneBy({username: loginDto.username})
+        const user = await this.userRepository.findOneBy({email: loginDto.email})
         if(!user){
-            throw new BadRequestException(`User with email '${loginDto.username}' not found`);
+            throw new BadRequestException(`User with email '${loginDto.email}' not found`);
         }
         let isPasswordCorrect = await bcrypt.compare(loginDto.password, user.password);
         if(!isPasswordCorrect){
             throw new UnauthorizedException('Incorrect password');
         }
         const {password, ...userWithoutPassword} = user;
-        const payload = { id: user.id, username: user.username, email: user.email };
+        const payload = { id: user.id, email: user.email };
         return {
             message : "successfully connected",
             token : await this.jwtService.signAsync(payload),
         }
     }
 
-    async validateUser(username: string, pass: string): Promise<any> {
-        const user = await this.userRepository.findOneBy({username});
+    async validateUser(email: string, pass: string): Promise<any> {
+        const user = await this.userRepository.findOneBy({email});
         if(!user){
             return null;
         }
